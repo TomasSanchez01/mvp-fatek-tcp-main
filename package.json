@@ -6,9 +6,9 @@
     "net": "^1.0.2"
   },
   "scripts": {
-    "start": "tsc app.tsx && node app.js"
+    "start": "tsc && node dist/app.js"
   },
-  "name": "mvp-fatek-tcp",
+  "name": "mvp-fatek-tcp-main",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -16,6 +16,6 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.5",
-    "typescript": "^5.7.3"
+    "typescript": "^5.8.2"
   }
 }

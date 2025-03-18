@@ -1,7 +1,13 @@
 {
-    "compilerOptions": {
-      "lib": ["dom", "esnext"],
-      "esModuleInterop": true,
-      "module": "CommonJS"
-    }
-  }
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["./**/*.ts", "./**/*.tsx"],
+  "exclude": ["node_modules"]
+}
