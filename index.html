@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MVP Fatek/TCP</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+        margin: 0;
+      }
+      .container {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 500px;
+      }
+      h1 {
+        font-size: 28px;
+        color: #333;
+        margin-bottom: 25px;
+      }
+      p {
+        font-size: 20px;
+        margin: 15px 0;
+      }
+      .bold {
+        font-weight: bold;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 18px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>MVP Fatek/TCP</h1>
+      <p>
+        🌡️ <span class="bold">Temperatura:</span> <span id="temp">0°C</span>
+      </p>
+      <p>
+        ⚙️ <span class="bold">Presión:</span> <span id="pressure">0 bar</span>
+      </p>
+      <p>
+        📦 <span class="bold">Materiales usados:</span>
+        <span id="materials">0 kg</span>
+      </p>
+      <p>
+        🏭 <span class="bold">Productos realizados:</span>
+        <span id="products">0</span>
+      </p>
+      <button id="reset-values">Resetear Valores</button>
+      <p>Desarrolado por Tomas Sanchez -- Digital Nova</p>
+      <script>
+        document
+          .getElementById('reset-values')
+          .addEventListener('click', function () {
+            fetch('http://localhost:3000/reset', {
+              method: 'POST',
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log('Success:', data);
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
+          });
+
+        function updateValues() {
+          fetch('http://localhost:3000/values')
+            .then((response) => response.json())
+            .then((data) => {
+              isFirstFetch = false;
+              document.getElementById('temp').textContent = data.temp + '°C';
+              document.getElementById('pressure').textContent =
+                data.pressure + ' bar';
+              document.getElementById('materials').textContent =
+                data.materials + ' kg';
+              document.getElementById('products').textContent = data.products;
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+        }
+
+        updateValues();
+        setInterval(updateValues, 1000);
+      </script>
+    </div>
+  </body>
+</html>
