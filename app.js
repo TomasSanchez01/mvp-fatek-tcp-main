@@ -90,7 +90,7 @@ var FatekPLC = /** @class */ (function () {
 var plc = new FatekPLC('192.168.100.85');
 plc.connect();
 function publishData() {
-    plc.readRegister('R', '20', 7);
+    plc.readRegister('R', '20', 12);
     plc.client.once('data', function (data) {
         var values = plc.parseResponse(data.toString('ascii'));
         // Publicamos los datos en el tópico MQTT
@@ -102,34 +102,44 @@ function publishData() {
             days: values[4],
             hours: values[5],
             minutes: values[6],
-        };
-        // Configuración MQTT (usando MQTT X)
-        var mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
-            clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
-        });
-        mqttClient.on('connect', function () {
-            console.log('✅ Conectado al broker MQTT X');
-            mqttClient.publish('sensor/data', JSON.stringify(mqttPayload), { qos: 1 }, function (err) {
-                if (err) {
-                    console.error('❌ Error al publicar en MQTT:', err);
-                }
-                else {
-                    console.log('✅ Datos enviados al broker MQTT');
-                }
-                mqttClient.end();
-            });
-        });
-        mqttClient.on('error', function (err) {
-            console.error('❌ Error en la conexión MQTT:', err);
-        });
+            status: values[7],
+            timeOffMachine: values[8],
+            emergencyStop: values[9],
+            alarmMuñeco: values[10],
+            alarmTraccionador: values[11],
+          };
+
+    // Configuración MQTT (usando MQTT X)
+    var mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
+      clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
     });
+
+    mqttClient.on('connect', function () {
+      console.log('✅ Conectado al broker MQTT X');
+      mqttClient.publish(
+        'sensor/data',
+        JSON.stringify(mqttPayload),
+        { qos: 1 },
+        function (err) {
+          if (err) {
+            console.error('❌ Error al publicar en MQTT:', err);
+          } else {
+            console.log('✅ Datos enviados al broker MQTT');
+          }
+          mqttClient.end();
+        }
+      );
+    });
+
+    mqttClient.on('error', function (err) {
+      console.error('❌ Error en la conexión MQTT:', err);
+    });
+  });
 }
-// Publicar datos cada 5 segundos
-setInterval(publishData, 5000);
-app.post('/reset', function (req, res) {
-    plc.writeRegister('R', '4', 1);
-    res.json({ message: 'Reset command sent' });
-});
+
+// Publicar datos cada 10 segundos
+setInterval(publishData, 10000);
+
 app.use(function (req, res, next) {
     res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'");
     next();

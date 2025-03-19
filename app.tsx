@@ -103,7 +103,7 @@ var plc = new FatekPLC('192.168.100.85');
 plc.connect();
 
 function publishData() {
-  plc.readRegister('R', '20', 7);
+  plc.readRegister('R', '20', 12);
   plc.client.once('data', function (data) {
     var values = plc.parseResponse(data.toString('ascii'));
 
@@ -116,6 +116,11 @@ function publishData() {
       days: values[4],
       hours: values[5],
       minutes: values[6],
+      status: values[7],
+      timeOffMachine: values[8],
+      emergencyStop: values[9],
+      alarmMuñeco: values[10],
+      alarmTraccionador: values[11],
     };
 
     // Configuración MQTT (usando MQTT X)
@@ -146,13 +151,8 @@ function publishData() {
   });
 }
 
-// Publicar datos cada 5 segundos
-setInterval(publishData, 5000);
-
-app.post('/reset', function (req, res) {
-  plc.writeRegister('R', '4', 1);
-  res.json({ message: 'Reset command sent' });
-});
+// Publicar datos cada 10 segundos
+setInterval(publishData, 10000);
 
 app.use(function (req, res, next) {
   res.setHeader(
