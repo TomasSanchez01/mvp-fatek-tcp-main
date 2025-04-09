@@ -99,7 +99,7 @@ class FatekPLC {
   }
 }
 
-var plc = new FatekPLC('192.168.100.85');
+var plc = new FatekPLC('192.168.1.58');
 plc.connect();
 
 function publishData() {
@@ -162,6 +162,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.listen(3000, function () {
-  return console.log('🚀 Server running on http://localhost:3000');
+app.listen(3001, function () {
+  return console.log('🚀 Server running on http://localhost:3001');
 });
